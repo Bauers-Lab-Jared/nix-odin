@@ -3,7 +3,7 @@
   stdenv,
 }:
 stdenv.mkDerivation {
-  pname = "odin-test";
+  pname = "WaffleLib";
   version = "0.1";
   src = ./src/main;
 
@@ -19,7 +19,7 @@ stdenv.mkDerivation {
 
     target=$out/
     #mkdir -p $out/
-    cp -r . $target
+    cp -r ./WaffleLib/ $target
 
     runHook postInstall
   '';
