@@ -13,7 +13,7 @@
       inherit (nixpkgs) lib;
       pkgs = nixpkgs.legacyPackages.${system};
     in {
-      package = lib.packagesFromDirectoryRecursive {
+      packages = lib.packagesFromDirectoryRecursive {
         inherit (pkgs) callPackage;
         directory = ./libs;
       };
