@@ -1,8 +1,9 @@
 {
   stdenv,
   fetchFromGitHub,
+  lib,
 }: let
-  libName = baseNameOf (toString ./.);
+  libName = lib.removeSuffix ".nix" (baseNameOf (toString __curPos.file));
 in
 stdenv.mkDerivation {
   pname = "odin-waffle";
@@ -26,7 +27,7 @@ stdenv.mkDerivation {
 
     target=$out/
     #mkdir -p $out/
-    cp -r ./${libName}/ $target
+    cp -r ./WaffleLib/ $target
 
     runHook postInstall
   '';
