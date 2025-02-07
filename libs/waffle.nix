@@ -27,7 +27,7 @@ stdenv.mkDerivation {
 
     target=$out/lib/
     mkdir -p $target
-    cp -r ./WaffleLib/ $target
+    cp -r ./ $target
 
     runHook postInstall
   '';
