@@ -19,5 +19,7 @@
       };
     };
   in
-    flake-utils.lib.eachDefaultSystem out;
+    {
+      libs = (flake-utils.lib.eachDefaultSystem out).packages.x86_64-linux;
+    };
 }
