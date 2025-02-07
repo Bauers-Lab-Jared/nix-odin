@@ -1,9 +1,11 @@
 {
   stdenv,
   fetchFromGitHub,
-}:
+}: let
+  libName = baseNameOf (toString ./.);
+in
 stdenv.mkDerivation {
-  pname = "WaffleLib";
+  pname = "odin-waffle";
   version = "0.1";
   src = fetchFromGitHub {
     owner = "Bauers-Lab-Jared";
@@ -24,7 +26,7 @@ stdenv.mkDerivation {
 
     target=$out/
     #mkdir -p $out/
-    cp -r ./WaffleLib/ $target
+    cp -r ./${libName}/ $target
 
     runHook postInstall
   '';
