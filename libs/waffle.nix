@@ -11,8 +11,8 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "Bauers-Lab-Jared";
     repo = "odin-waffle";
-    rev = "367e1c7fab0831a0562e8655d704e12526c984ca";
-    hash = "sha256-jaEN3u1EjhyYPBix3ChEpniWros3myJfX7QNcQkqWV0=";
+    rev = "e821ee9efc45c87308d58a965fc3800e7c2bcd4f";
+    hash = "sha256-X8lOL6UsL35o5/d9WQSbJE8gz3EUhu/EOBS9mT9b6Qk=";
   };
 
   unpackPhase = "";
