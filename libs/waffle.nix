@@ -25,7 +25,7 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    target=$out/
+    target=$out/lib/
     #mkdir -p $out/
     cp -r ./WaffleLib/ $target
 
