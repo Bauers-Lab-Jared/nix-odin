@@ -2,9 +2,11 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     flake-utils.url = "github:numtide/flake-utils";
+    nixvim.url = "github:bauers-lab-jared/nixvim";
   };
 
   outputs = {
+    self,
     nixpkgs,
     flake-utils,
     ...
@@ -12,14 +14,19 @@
     out = system: let
       inherit (nixpkgs) lib;
       pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      packages = lib.packagesFromDirectoryRecursive {
-        inherit (pkgs) callPackage;
-        directory = ./libs;
+    in (import ./nix {inherit lib pkgs;}).export // {
+      devShells.default = pkgs.mkShell {
+        packages = [
+          (self.inputs.nixvim.lib.mkNixvim {
+            pkgs = self.inputs.nixvim.inputs.nixpkgs.legacyPackages.${system};
+            addons = [
+              "proj-odin"
+              "proj-nix"
+            ];
+          })
+        ];
       };
     };
   in
-    {
-      libs = (flake-utils.lib.eachDefaultSystem out).packages.x86_64-linux;
-    };
+    flake-utils.lib.eachDefaultSystem out;
 }
