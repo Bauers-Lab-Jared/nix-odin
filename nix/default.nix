@@ -1,11 +1,18 @@
-{lib, pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   export = {
-    lib = { 
-      buildOdin = import ./buildOdin.nix {inherit lib pkgs;};
-     };
-      odin-libs = lib.packagesFromDirectoryRecursive {
-        inherit (pkgs) callPackage;
-        directory = ./odin-libs;
-      };
+    lib = configModules: let
+      inherit (lib.evalModules {modules = [./modules] ++ configModules;}) odinConfig;
+    in {
+      inherit odinConfig;
+      buildOdin = import ./buildOdin.nix {inherit odinConfig;};
+    };
+    odin-libs = lib.packagesFromDirectoryRecursive {
+      inherit (pkgs) callPackage;
+      directory = ./odin-libs;
+    };
   };
 }

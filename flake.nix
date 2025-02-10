@@ -13,20 +13,25 @@
   }: let
     out = system: let
       inherit (nixpkgs) lib;
-      pkgs = nixpkgs.legacyPackages.${system};
-    in (import ./nix {inherit lib pkgs;}).export // {
-      devShells.default = pkgs.mkShell {
-        packages = [
-          (self.inputs.nixvim.lib.mkNixvim {
-            pkgs = self.inputs.nixvim.inputs.nixpkgs.legacyPackages.${system};
-            addons = [
-              "proj-odin"
-              "proj-nix"
-            ];
-          })
-        ];
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [(import ./nix/overlays)];
       };
-    };
+    in
+      (import ./nix {inherit lib pkgs;}).export
+      // {
+        devShells.default = pkgs.mkShell {
+          packages = [
+            (self.inputs.nixvim.lib.mkNixvim {
+              pkgs = self.inputs.nixvim.inputs.nixpkgs.legacyPackages.${system};
+              addons = [
+                "proj-odin"
+                "proj-nix"
+              ];
+            })
+          ];
+        };
+      };
   in
     flake-utils.lib.eachDefaultSystem out;
 }
