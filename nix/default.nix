@@ -3,16 +3,26 @@
   pkgs,
   ...
 }: {
-  export = {
+  export = let
+    odinLibs = lib.packagesFromDirectoryRecursive {
+      inherit (pkgs) callPackage;
+      directory = ./odinLibs;
+    };
+  in {
     lib = configModules: let
-      inherit (lib.evalModules {modules = [./modules] ++ configModules;}) odinConfig;
+      odinConfig = let
+        modules =
+          [
+            ({...}: {config._module.args = {inherit pkgs odinLibs;};})
+            ./modules
+          ]
+          ++ configModules;
+      in
+        (lib.evalModules {inherit modules;}).config;
     in {
       inherit odinConfig;
       buildOdin = import ./buildOdin.nix {inherit odinConfig;};
     };
-    odin-libs = lib.packagesFromDirectoryRecursive {
-      inherit (pkgs) callPackage;
-      directory = ./odin-libs;
-    };
+    inherit odinLibs;
   };
 }

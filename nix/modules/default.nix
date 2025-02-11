@@ -1,14 +1,22 @@
-{lib, ...}: {
+{lib, ...}: let
+  inherit (lib) types;
+in {
   imports = [
-    ./buildCommand.nix
+    ./cli.nix
+    ./raylib.nix
+    ./libs.nix
   ];
   options = {
-    scripts.output = lib.mkOption {
-      type = lib.types.lines;
+    nativeBuildInputs = lib.mkOption {
+      type = types.listOf types.str;
+      default = [];
+    };
+    buildInputs = lib.mkOption {
+      type = types.listOf types.str;
+      default = [];
     };
   };
 
   config = {
-    scripts.output = "test";
   };
 }
