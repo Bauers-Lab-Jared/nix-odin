@@ -15,32 +15,31 @@
     out = system: let
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [(import ./nix/overlays)];
+        overlays = [(import ./nix/overlays {inherit lib;})];
       };
       appliedOverlay = self.overlays.default pkgs pkgs;
-    in
-      (import ./nix {inherit lib appliedOverlay;}).export
-      // {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            (self.inputs.nixvim.lib.mkNixvim {
-              pkgs = self.inputs.nixvim.inputs.nixpkgs.legacyPackages.${system};
-              addons = [
-                "proj-odin"
-                "proj-nix"
-              ];
-            })
-          ];
-        };
+    in {
+      packages = {
+        inherit (pkgs) odinLibs;
       };
+      inherit (appliedOverlay) buildOdin;
+      devShells.default = pkgs.mkShell {
+        packages = [
+          (self.inputs.nixvim.lib.mkNixvim {
+            pkgs = self.inputs.nixvim.inputs.nixpkgs.legacyPackages.${system};
+            addons = [
+              "proj-odin"
+              "proj-nix"
+            ];
+          })
+        ];
+      };
+    };
   in
     flake-utils.lib.eachDefaultSystem out
     // {
       overlays.default = final: prev: {
-        odinLibs = lib.packagesFromDirectoryRecursive {
-          inherit (final) callPackage;
-          directory = ./nix/odinLibs;
-        };
+        buildOdin = import ./buildOdin.nix {pkgs = prev;};
       };
     };
 }

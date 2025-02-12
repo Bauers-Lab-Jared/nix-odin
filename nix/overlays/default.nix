@@ -1,5 +1,10 @@
-(
+{lib}: (
   final: prev: {
+    odinLibs = lib.packagesFromDirectoryRecursive {
+      inherit (final) callPackage;
+      directory = ../odinLibs;
+    };
+
     # TODO: Wait for https://github.com/odin-lang/Odin/pull/4619 to be merged
     odin = prev.odin.overrideAttrs {
       patches = [

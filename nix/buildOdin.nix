@@ -1,4 +1,14 @@
-{odinConfig}: projConfig: let
+{pkgs}: {projConfig}: let
+  inherit (pkgs) odinLibs;
+  odinConfig = configModules: let
+    modules =
+      [
+        ({...}: {config._module.args = {inherit pkgs odinLibs;};})
+        ./modules
+      ]
+      ++ configModules;
+  in
+    (pkgs.lib.evalModules {inherit modules;}).config;
   cfg = odinConfig projConfig;
 in
   args @ {stdenv, ...}: let
