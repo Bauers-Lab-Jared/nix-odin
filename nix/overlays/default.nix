@@ -1,7 +1,7 @@
 {lib}: (
   final: prev: let
     odinLibs = lib.packagesFromDirectoryRecursive {
-      inherit (prev) callPackage;
+      inherit (final) callPackage;
       directory = ../odinLibs;
     };
   in {

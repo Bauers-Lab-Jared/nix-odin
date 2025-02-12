@@ -12,7 +12,7 @@
   in
     stdenv.mkDerivation {
       inherit (cfg) pname version src;
-      inherit (cfg.libs) odinLib;
+      inherit cfg;
       nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib];
       buildInputs = map fromArgs cfg.buildInputs;
 
