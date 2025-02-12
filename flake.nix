@@ -13,13 +13,11 @@
   }: let
     inherit (nixpkgs) lib;
     out = system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [(import ./nix/overlays {inherit lib;})];
-      };
+      pkgs = nixpkgs.legacyPackages.${system};
+      appliedOverlay = self.overlays.default pkgs pkgs;
     in {
       packages = {
-        inherit (pkgs) odinLibs;
+        inherit (appliedOverlay) odinLibs;
       };
       devShells.default = pkgs.mkShell {
         packages = [
@@ -36,8 +34,6 @@
   in
     flake-utils.lib.eachDefaultSystem out
     // {
-      overlays.default = final: prev: {
-        buildOdin = import ./buildOdin.nix {pkgs = prev;};
-      };
+      overlays.default = import ./nix/overlays {inherit lib;};
     };
 }

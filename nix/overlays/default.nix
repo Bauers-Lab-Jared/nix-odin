@@ -1,7 +1,9 @@
 {lib}: (
   final: prev: {
+    buildOdin = import ../buildOdin.nix {pkgs = final;};
+
     odinLibs = lib.packagesFromDirectoryRecursive {
-      inherit (final) callPackage;
+      inherit (prev) callPackage;
       directory = ../odinLibs;
     };
 

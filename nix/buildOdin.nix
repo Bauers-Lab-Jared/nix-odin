@@ -1,4 +1,4 @@
-{pkgs}: {projConfig}: let
+{pkgs}: projConfig: let
   inherit (pkgs) odinLibs;
   odinConfig = configModules: let
     modules =
