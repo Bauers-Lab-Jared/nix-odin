@@ -1,17 +1,6 @@
 {pkgs}: projConfig: let
-  inherit (pkgs) odinLibs lib;
-
-  odinConfig = configModules: let
-    modules =
-      [
-        ({...}: {config._module.args = {inherit pkgs odinLibs;};})
-        ./modules
-      ]
-      ++ configModules;
-  in
-    (lib.evalModules {inherit modules;}).config;
-
-  cfg = odinConfig projConfig;
+  inherit (pkgs) odinConfig lib;
+  cfg = odinConfig;
 
   fArgs = let
     allInputs = lib.unique (cfg.nativeBuildInputs ++ cfg.buildInputs);
@@ -27,6 +16,7 @@
         pname
         version
         src
+        odinConfig
         ;
       nativeBuildInputs = map fromArgs cfg.nativeBuildInputs;
       buildInputs = map fromArgs cfg.buildInputs;

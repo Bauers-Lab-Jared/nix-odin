@@ -1,5 +1,17 @@
 {lib}: (
   final: prev: {
+    odinConfig = configModules: let
+      pkgs = final;
+      inherit (pkgs) odinLibs;
+      modules =
+        [
+          ({...}: {config._module.args = {inherit pkgs odinLibs;};})
+          ../modules
+        ]
+        ++ configModules;
+    in
+      (lib.evalModules {inherit modules;}).config;
+
     buildOdin = import ../buildOdin.nix {pkgs = final;};
 
     odinLibs = lib.packagesFromDirectoryRecursive {

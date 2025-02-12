@@ -17,7 +17,7 @@
       appliedOverlay = self.overlays.default pkgs pkgs;
     in {
       packages = {
-        inherit (appliedOverlay) odinLibs buildOdin;
+        inherit (appliedOverlay) odinLibs buildOdin odinConfig;
       };
       devShells.default = pkgs.mkShell {
         packages = [
