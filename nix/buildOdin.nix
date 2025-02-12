@@ -11,12 +11,8 @@
     fromArgs = name: builtins.getAttr name args;
   in
     stdenv.mkDerivation {
-      inherit
-        (cfg)
-        pname
-        version
-        src
-        ;
+      inherit (cfg) pname version src;
+      inherit (cfg.libs) odinLib;
       nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib];
       buildInputs = map fromArgs cfg.buildInputs;
 
