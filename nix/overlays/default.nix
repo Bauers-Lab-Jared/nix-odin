@@ -1,8 +1,14 @@
 {lib}: (
-  final: prev: {
+  final: prev: let
+    odinLibs = lib.packagesFromDirectoryRecursive {
+      inherit (prev) callPackage;
+      directory = ../odinLibs;
+    };
+  in {
+    inherit odinLibs;
+
     odinConfig = configModules: let
       pkgs = final;
-      inherit (pkgs) odinLibs;
       modules =
         [
           ({...}: {config._module.args = {inherit pkgs odinLibs;};})
@@ -13,11 +19,6 @@
       (lib.evalModules {inherit modules;}).config;
 
     buildOdin = import ../buildOdin.nix {pkgs = final;};
-
-    odinLibs = lib.packagesFromDirectoryRecursive {
-      inherit (prev) callPackage;
-      directory = ../odinLibs;
-    };
 
     # TODO: Wait for https://github.com/odin-lang/Odin/pull/4619 to be merged
     odin = prev.odin.overrideAttrs {
