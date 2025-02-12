@@ -15,6 +15,12 @@ in
     fromArgs = name: builtins.getAttr name args;
   in
     stdenv.mkDerivation {
+      inherit
+        (cfg)
+        pname
+        version
+        src
+        ;
       nativeBuildInputs = map fromArgs cfg.nativeBuildInputs;
       buildInputs = map fromArgs cfg.buildInputs;
 
@@ -36,9 +42,3 @@ in
         runHook postInstall
       '';
     }
-    // (map fromArgs
-      [
-        "pname"
-        "version"
-        "src"
-      ])

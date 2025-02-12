@@ -6,7 +6,9 @@ in {
     ./raylib.nix
     ./libs.nix
   ];
-  options = {
+  options = let
+    mkOpt = type: lib.mkOption {inherit type;};
+  in {
     nativeBuildInputs = lib.mkOption {
       type = types.listOf types.str;
       default = [];
@@ -15,6 +17,9 @@ in {
       type = types.listOf types.str;
       default = [];
     };
+    pname = mkOpt types.str;
+    version = mkOpt types.str;
+    src = mkOpt types.path;
   };
 
   config = {
