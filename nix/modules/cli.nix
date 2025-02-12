@@ -54,7 +54,7 @@ in {
         ];
       }
       (lib.genAttrs ["build" "test" "debug"] (name: {
-        cmd = builtins.concatStringsSep " \\\n" ([
+        cmd = builtins.concatStringsSep " " ([
             (baseCmd name)
           ]
           ++ cfg.all.args
