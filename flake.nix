@@ -11,28 +11,14 @@
     flake-utils,
     ...
   }: let
-    lib =
-      nixpkgs.lib
-      // {
-        odinConfig = pkgs: configModules: let
-          inherit (pkgs) odinLibs;
-          modules =
-            [
-              ({...}: {config._module.args = {inherit pkgs odinLibs;};})
-              ./nix/modules
-            ]
-            ++ configModules;
-        in
-          (lib.evalModules {inherit modules;}).config;
-      };
+    inherit (nixpkgs) lib;
     out = system: let
       pkgs = nixpkgs.legacyPackages.${system};
       appliedOverlay = self.overlays.default pkgs pkgs;
     in {
       packages = {
-        inherit (appliedOverlay) odinLibs buildOdin;
+        inherit (appliedOverlay) odinLibs buildOdin odinConfig;
       };
-      odinConfig = lib.odinConfig appliedOverlay;
       devShells.default = pkgs.mkShell {
         packages = [
           (self.inputs.nixvim.lib.mkNixvim {
