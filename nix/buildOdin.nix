@@ -17,7 +17,7 @@
         version
         src
         ;
-      nativeBuildInputs = map fromArgs cfg.nativeBuildInputs;
+      nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib];
       buildInputs = map fromArgs cfg.buildInputs;
 
       buildPhase = ''
