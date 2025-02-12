@@ -17,12 +17,10 @@
         inherit system;
         overlays = [(import ./nix/overlays {inherit lib;})];
       };
-      appliedOverlay = self.overlays.default pkgs pkgs;
     in {
       packages = {
         inherit (pkgs) odinLibs;
       };
-      inherit (appliedOverlay) buildOdin;
       devShells.default = pkgs.mkShell {
         packages = [
           (self.inputs.nixvim.lib.mkNixvim {
