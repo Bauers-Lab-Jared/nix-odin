@@ -1,6 +1,8 @@
-{pkgs}: projConfig: let
-  inherit (pkgs) odinConfig lib;
-  cfg = odinConfig projConfig;
+{
+  lib,
+  pkgs,
+}: projConfig: let
+  cfg = lib.odinConfig pkgs projConfig;
 
   fArgs = let
     allInputs = lib.unique (cfg.nativeBuildInputs ++ cfg.buildInputs);
