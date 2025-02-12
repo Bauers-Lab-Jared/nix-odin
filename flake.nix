@@ -11,14 +11,15 @@
     flake-utils,
     ...
   }: let
+    inherit (nixpkgs) lib;
     out = system: let
-      inherit (nixpkgs) lib;
       pkgs = import nixpkgs {
         inherit system;
         overlays = [(import ./nix/overlays)];
       };
+      appliedOverlay = self.overlays.default pkgs pkgs;
     in
-      (import ./nix {inherit lib pkgs;}).export
+      (import ./nix {inherit lib appliedOverlay;}).export
       // {
         devShells.default = pkgs.mkShell {
           packages = [
@@ -33,5 +34,13 @@
         };
       };
   in
-    flake-utils.lib.eachDefaultSystem out;
+    flake-utils.lib.eachDefaultSystem out
+    // {
+      overlays.default = final: prev: {
+        odinLibs = lib.packagesFromDirectoryRecursive {
+          inherit (final) callPackage;
+          directory = ./nix/odinLibs;
+        };
+      };
+    };
 }

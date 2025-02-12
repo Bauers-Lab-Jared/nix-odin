@@ -1,31 +1,34 @@
-{odinConfig}: args @ {stdenv, ...}: let
-  fromArgs = name: builtins.getAttr name args;
+{odinConfig}: projConfig: let
+  cfg = odinConfig projConfig;
 in
-  stdenv.mkDerivation {
-    nativeBuildInputs = map fromArgs odinConfig.nativeBuildInputs;
-    buildInputs = map fromArgs odinConfig.buildInputs;
+  args @ {stdenv, ...}: let
+    fromArgs = name: builtins.getAttr name args;
+  in
+    stdenv.mkDerivation {
+      nativeBuildInputs = map fromArgs cfg.nativeBuildInputs;
+      buildInputs = map fromArgs cfg.buildInputs;
 
-    buildPhase = ''
-      runHook preBuild
+      buildPhase = ''
+        runHook preBuild
 
-      mkdir -p $out/bin
-      ${odinConfig.cli.build.cmd}
+        mkdir -p $out/bin
+        ${cfg.cli.build.cmd}
 
-      runHook postBuild
-    '';
+        runHook postBuild
+      '';
 
-    installPhase = ''
-      runHook preInstall
+      installPhase = ''
+        runHook preInstall
 
-      mkdir -p $out/resources
-      cp -r $src/resources/ $out
+        mkdir -p $out/resources
+        cp -r $src/resources/ $out
 
-      runHook postInstall
-    '';
-  }
-  // (map fromArgs
-    [
-      "pname"
-      "version"
-      "src"
-    ])
+        runHook postInstall
+      '';
+    }
+    // (map fromArgs
+      [
+        "pname"
+        "version"
+        "src"
+      ])

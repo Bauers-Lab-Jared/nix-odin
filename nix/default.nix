@@ -1,28 +1,23 @@
 {
   lib,
-  pkgs,
+  appliedOverlay,
   ...
 }: {
   export = let
-    odinLibs = lib.packagesFromDirectoryRecursive {
-      inherit (pkgs) callPackage;
-      directory = ./odinLibs;
-    };
+    pkgs = appliedOverlay;
+    inherit (pkgs) odinLibs;
+    odinConfig = configModules: let
+      modules =
+        [
+          ({...}: {config._module.args = {inherit pkgs odinLibs;};})
+          ./modules
+        ]
+        ++ configModules;
+    in
+      (lib.evalModules {inherit modules;}).config;
   in {
-    lib = configModules: let
-      odinConfig = let
-        modules =
-          [
-            ({...}: {config._module.args = {inherit pkgs odinLibs;};})
-            ./modules
-          ]
-          ++ configModules;
-      in
-        (lib.evalModules {inherit modules;}).config;
-    in {
-      inherit odinConfig;
-      buildOdin = import ./buildOdin.nix {inherit odinConfig;};
-    };
-    inherit odinLibs;
+    inherit odinConfig;
+    buildOdin = import ./buildOdin.nix {inherit odinConfig;};
+    packages = {inherit odinLibs;};
   };
 }
