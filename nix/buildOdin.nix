@@ -1,5 +1,6 @@
 {pkgs}: projConfig: let
-  inherit (pkgs) odinLibs;
+  inherit (pkgs) odinLibs lib;
+
   odinConfig = configModules: let
     modules =
       [
@@ -8,10 +9,16 @@
       ]
       ++ configModules;
   in
-    (pkgs.lib.evalModules {inherit modules;}).config;
+    (lib.evalModules {inherit modules;}).config;
+
   cfg = odinConfig projConfig;
-in
-  args @ {stdenv, ...}: let
+
+  fArgs = let
+    allInputs = lib.unique (cfg.nativeBuildInputs ++ cfg.buildInputs);
+  in
+    lib.genAttrs (["stdenv"] ++ allInputs) (n: false);
+
+  f = args @ {stdenv, ...}: let
     fromArgs = name: builtins.getAttr name args;
   in
     stdenv.mkDerivation {
@@ -41,4 +48,6 @@ in
 
         runHook postInstall
       '';
-    }
+    };
+in
+  lib.setFunctionArgs f fArgs
