@@ -5,6 +5,7 @@ in {
     ./cli.nix
     ./raylib.nix
     ./libs.nix
+    ./sokol.nix
   ];
   options = let
     mkOpt = type: lib.mkOption {inherit type;};
