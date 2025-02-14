@@ -23,5 +23,10 @@ in {
   };
 
   config = {
+    nativeBuildInputs = [
+      "gdb"
+      "go-task"
+      "odin"
+    ];
   };
 }

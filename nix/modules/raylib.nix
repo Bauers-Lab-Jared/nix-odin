@@ -10,12 +10,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    nativeBuildInputs = [
-      "gdb"
-      "go-task"
-      "odin"
-    ];
-
     buildInputs = [
       "libX11"
       "libGL"
