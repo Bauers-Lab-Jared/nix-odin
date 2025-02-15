@@ -23,7 +23,7 @@ stdenv.mkDerivation {
   postInstall = "";
   addonInfo = null;
 
-  buildInputs = [
+  propagatedBuildInputs = [
     libGLU
     mesa
     xorg.libX11
