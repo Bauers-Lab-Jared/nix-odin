@@ -45,7 +45,7 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    target=$out
+    target=$out/lib
     mkdir -p $target
     cp -r ./sokol/** $target
 
