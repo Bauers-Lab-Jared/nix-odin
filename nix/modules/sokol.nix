@@ -11,6 +11,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     buildInputs = [
+      "sokol-odin"
     ];
     libs.import = ["sokol"];
   };
