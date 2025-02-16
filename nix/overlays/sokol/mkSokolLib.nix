@@ -8,6 +8,7 @@
   xorg,
   alsa-lib,
   sokol-odin-src,
+  pkg-config,
 }:
 stdenv.mkDerivation rec {
   pname = lname;
@@ -23,6 +24,30 @@ stdenv.mkDerivation rec {
     xorg.libXcursor
     alsa-lib
   ];
+
+  nativeBuildInputs = [
+    pkg-config
+  ];
+
+  postPatch = ''
+    SOKOL_DEPS="sokol_${pname} \
+    $(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
+
+    sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
+    sed -i 's/"sokol_\([^_]*\)_linux_x64_gl_\([^._]*\)./"system:sokol_\1_\2./' *.odin
+
+    echo "prefix=$prefix \
+    exec_prefix=$exec_prefix \
+    libdir=$libdir \
+    includedir=$includedir \
+     \
+    Name: sokol_${pname}\
+    Description: The ${pname} module from sokol-odin \
+    Version: 0 \
+    Requires: $SOKOL_DEPS \
+    Cflags: -I''${includedir} \
+    Libs: -L''${libdir} -lsokol_${pname}" > sokol_${pname}.pc.in
+  '';
 
   buildPhase = ''
     runHook preBuild
@@ -58,10 +83,6 @@ stdenv.mkDerivation rec {
     mkdir -p "$out/lib"
     mkdir -p "$out/include"
 
-    sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin > "$out/deps"
-    sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
-    echo "DEPS ------------------------------------"
-    cat "$out/deps"
     cp *.odin "$out/include"
 
     mv release.a $rDst.a
@@ -69,11 +90,18 @@ stdenv.mkDerivation rec {
     mv release.so $rDst.so
     mv debug.so $dDst.so
 
-    ln -s $rDst.a $rLink.a
-    ln -s $dDst.a $dLink.a
-    ln -s $rDst.so $rLink.so
-    ln -s $dDst.so $dLink.so
+    #echo -n " $out" >> $out/nix-support/propagated-build-inputs
+
+    #ln -s $rDst.a $rLink.a
+    #ln -s $dDst.a $dLink.a
+    #ln -s $rDst.so $rLink.so
+    #ln -s $dDst.so $dLink.so
 
     runHook postInstall
   '';
+
+  meta = {
+    pkgConfigModules = ["sokol_${pname}"];
+    platforms = lib.platforms.unix;
+  };
 }
