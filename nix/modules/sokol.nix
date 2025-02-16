@@ -10,6 +10,9 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    nativeBuildInputs = [
+      "sokol-odin"
+    ];
     buildInputs = [
       "sokol-odin"
     ];
