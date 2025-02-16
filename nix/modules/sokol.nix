@@ -9,7 +9,7 @@ in {
   options.sokol = {
     enable = lib.mkEnableOption "Add sokol to the project";
     modules = lib.mkOption {
-      type = types.listOf types.enum [
+      type = types.listOf (types.enum [
         "log"
         "gfx"
         "app"
@@ -19,7 +19,7 @@ in {
         "debugtext"
         "shape"
         "gl"
-      ];
+      ]);
       default = [];
     };
   };
