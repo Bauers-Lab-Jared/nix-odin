@@ -58,6 +58,10 @@ stdenv.mkDerivation rec {
     mkdir -p "$out/lib"
     mkdir -p "$out/include"
 
+    sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin > "$out/deps"
+    sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
+    echo "DEPS ------------------------------------"
+    cat "$out/deps"
     cp *.odin "$out/include"
 
     mv release.a $rDst.a
