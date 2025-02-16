@@ -45,12 +45,9 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    target=$out
-    mkdir -p "$target/include"
-    mkdir -p "$target/lib"
-    cp -r ./sokol/** "$target/include"
-    find "$target/include/" -name "**.a" -exec mv '{}' "$target/lib" \;
-    find "$target/include/" -name "**.so" -exec mv '{}' "$target/lib" \;
+    target=$out/lib
+    mkdir -p $target
+    cp -r ./sokol/** $target
 
     runHook postInstall
   '';

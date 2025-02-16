@@ -25,7 +25,7 @@ in {
       links =
         map (name: {
           inherit name;
-          path = "${odinLibs.${name}}/include";
+          path = "${odinLibs.${name}}/lib";
         })
         cfg.import;
     in
