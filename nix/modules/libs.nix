@@ -31,7 +31,7 @@ in {
             path = "${lib.getAttrFromPath p odinLibs}/include";
           }
         )
-        cfg.imports;
+        cfg.import;
     in
       pkgs.linkFarm "odinLib" links;
 
