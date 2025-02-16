@@ -27,5 +27,9 @@
 
     # TODO: Wait for https://github.com/NixOS/nixpkgs/pull/357729 to be merged
     raylib = final.callPackage ./raylib.nix {};
+
+    sokol-odin = import ./sokol {
+      inherit lib prev final;
+    };
   }
 )

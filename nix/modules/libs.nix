@@ -23,11 +23,15 @@ in {
   config = lib.mkIf (cfg.import != []) {
     libs.odinLib = let
       links =
-        map (name: {
-          inherit name;
-          path = "${odinLibs.${name}}/include";
-        })
-        cfg.import;
+        map (
+          s: let
+            p = lib.splitString "." s;
+          in {
+            name = builtins.concatStringsSep "/" p;
+            path = "${lib.getAttrFromPath p odinLibs}/include";
+          }
+        )
+        cfg.imports;
     in
       pkgs.linkFarm "odinLib" links;
 
