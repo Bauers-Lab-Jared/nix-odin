@@ -7,8 +7,6 @@
   in {
     inherit odinLibs;
 
-    sokol-odin = odinLibs.sokol;
-
     odinConfig = configModules: let
       pkgs = final;
       modules =
