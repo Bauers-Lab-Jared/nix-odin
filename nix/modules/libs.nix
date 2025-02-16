@@ -2,11 +2,11 @@
   lib,
   config,
   pkgs,
-  odinLibs,
   ...
 }: let
   cfg = config.libs;
   inherit (lib) types;
+  inherit (pkgs) odinLibs;
 in {
   options = {
     libs = {

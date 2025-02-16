@@ -1,17 +1,15 @@
 {lib}: (
-  final: prev: let
+  final: prev: {
     odinLibs = lib.packagesFromDirectoryRecursive {
       inherit (final) callPackage;
       directory = ../odinLibs;
     };
-  in {
-    inherit odinLibs;
 
     odinConfig = configModules: let
       pkgs = final;
       modules =
         [
-          ({...}: {config._module.args = {inherit pkgs odinLibs;};})
+          ({...}: {config._module.args = {inherit pkgs;};})
           ../modules
         ]
         ++ configModules;

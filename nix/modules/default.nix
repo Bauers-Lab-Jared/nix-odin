@@ -10,11 +10,11 @@ in {
   options = let
     mkOpt = type: lib.mkOption {inherit type;};
   in {
-    nativeBuildInputs = lib.mkOption {
+    nativeBuildInputStrs = lib.mkOption {
       type = types.listOf types.str;
       default = [];
     };
-    buildInputs = lib.mkOption {
+    buildInputStrs = lib.mkOption {
       type = types.listOf types.str;
       default = [];
     };
@@ -24,7 +24,7 @@ in {
   };
 
   config = {
-    nativeBuildInputs = [
+    nativeBuildInputStrs = [
       "gdb"
       "go-task"
       "odin"
