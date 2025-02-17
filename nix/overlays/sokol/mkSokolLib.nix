@@ -89,14 +89,16 @@ stdenv.mkDerivation rec {
     mv release.so $rDst.so
     mv debug.so $dDst.so
 
-    #echo -n " $out" >> $out/nix-support/propagated-build-inputs
-
     #ln -s $rDst.a $rLink.a
     #ln -s $dDst.a $dLink.a
     #ln -s $rDst.so $rLink.so
     #ln -s $dDst.so $dLink.so
 
     runHook postInstall
+  '';
+
+  postFixup = ''
+    echo -n " $out" >> $out/nix-support/propagated-build-inputs
   '';
 
   meta = {
