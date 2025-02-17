@@ -12,13 +12,17 @@
   f = args @ {stdenv, ...}: let
     fromArgs = attrPath: lib.getAttrFromPath attrPath args;
   in
-    stdenv.mkDerivation {
+    stdenv.mkDerivation rec {
       inherit (cfg) pname version src;
       passthru = {
         inherit cfg;
       };
       nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [cfg.libs.odinLib];
       buildInputs = map fromArgs buildInputPaths;
+
+      LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${
+        lib.makeLibraryPath buildInputs
+      }";
 
       buildPhase = ''
         runHook preBuild
