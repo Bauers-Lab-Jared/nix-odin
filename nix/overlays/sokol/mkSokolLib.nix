@@ -29,26 +29,6 @@ stdenv.mkDerivation rec {
     pkg-config
   ];
 
-  postPatch = ''
-    SOKOL_DEPS="sokol_${pname} \
-    $(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
-
-    sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
-    sed -i "s:sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).:\.\.\/lib\/sokol_\1_\2.:" *.odin
-
-    echo "prefix=$prefix \
-    exec_prefix=$exec_prefix \
-    libdir=$libdir \
-    includedir=$includedir \
-     \
-    Name: sokol_${pname}\
-    Description: The ${pname} module from sokol-odin \
-    Version: 0 \
-    Requires: $SOKOL_DEPS \
-    Cflags: -I''${includedir} \
-    Libs: -L''${libdir} -lsokol_${pname}" > sokol_${pname}.pc.in
-  '';
-
   buildPhase = ''
     runHook preBuild
 
@@ -80,8 +60,26 @@ stdenv.mkDerivation rec {
     rLink="$out/include/sokol_gl_linux_x64_gl_release"
     dLink="$out/include/sokol_gl_linux_x64_gl_debug"
 
-    mkdir -p "$out/lib"
+    mkdir -p "$out/lib/pkgconfig"
     mkdir -p "$out/include"
+
+    SOKOL_DEPS="sokol_${pname} \
+    $(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
+
+    sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
+    sed -i "s:sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).:\.\.\/lib\/sokol_\1_\2.:" *.odin
+
+    echo "prefix=$prefix \
+    exec_prefix=$exec_prefix \
+    libdir=$libdir \
+    includedir=$includedir \
+     \
+    Name: sokol_${pname}\
+    Description: The ${pname} module from sokol-odin \
+    Version: 0 \
+    Requires: $SOKOL_DEPS \
+    Cflags: -I''${includedir} \
+    Libs: -L''${libdir} -lsokol_${pname}" > "$out/lib/pkgconfig/sokol_${pname}.pc.in"
 
     cp *.odin "$out/include"
 
