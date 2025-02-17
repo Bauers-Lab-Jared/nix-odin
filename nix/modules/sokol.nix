@@ -25,6 +25,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    nativeBuildInputStrs = map (moduleName: "sokol-odin.${moduleName}") cfg.modules;
     buildInputStrs = map (moduleName: "sokol-odin.${moduleName}") cfg.modules;
     libs.import = map (moduleName: "sokol.${moduleName}") cfg.modules;
   };
