@@ -34,7 +34,7 @@ stdenv.mkDerivation rec {
     $(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
 
     sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
-    sed -i 's/"sokol_\([^_]*\)_linux_x64_gl_\([^._]*\)./"system:sokol_\1\/sokol_\1_\2./' *.odin
+    sed -i "s:sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).:$out\/lib\/sokol_\1_\2.:" *.odin
 
     echo "prefix=$prefix \
     exec_prefix=$exec_prefix \
