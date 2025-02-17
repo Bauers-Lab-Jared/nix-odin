@@ -63,23 +63,24 @@ stdenv.mkDerivation rec {
     mkdir -p "$out/lib/pkgconfig"
     mkdir -p "$out/include"
 
-    SOKOL_DEPS="sokol_${pname} \
-    $(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
+    SOKOL_DEPS="$(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
 
     sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
     sed -i "s:sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).:\.\.\/lib\/sokol_\1_\2.:" *.odin
 
-    echo "prefix=$prefix \
-    exec_prefix=$exec_prefix \
-    libdir=$libdir \
-    includedir=$includedir \
-     \
-    Name: sokol_${pname}\
-    Description: The ${pname} module from sokol-odin \
-    Version: 0 \
-    Requires: $SOKOL_DEPS \
-    Cflags: -I''${includedir} \
-    Libs: -L''${libdir} -lsokol_${pname}" > "$out/lib/pkgconfig/sokol_${pname}.pc.in"
+    pkgcfg="$out/lib/pkgconfig/sokol_${pname}.pc"
+
+    echo "prefix=$prefix" > "$pkgcfg"
+    echo "exec_prefix=\''${exec_prefix}" >> "$pkgcfg"
+    echo "libdir=$prefix/lib" >> "$pkgcfg"
+    echo "includedir=$prefix/include" >> "$pkgcfg"
+    echo "" >> "$pkgcfg"
+    echo "Name: sokol_${pname}" >> "$pkgcfg"
+    echo "Description: The ${pname} module from sokol-odin" >> "$pkgcfg"
+    echo "Version: 0" >> "$pkgcfg"
+    echo "Libs: -L\"\''${libdir}\" -lsokol_${pname}" >> "$pkgcfg"
+    echo "Requires: $SOKOL_DEPS" >> "$pkgcfg"
+    echo "Cflags: -I\"\''${includedir}\"" >> "$pkgcfg"
 
     cp *.odin "$out/include"
 
