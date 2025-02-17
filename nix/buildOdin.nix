@@ -7,13 +7,9 @@
   buildInputPaths = getInputPaths (lib.unique cfg.buildInputStrs);
   allInputPaths = lib.unique (nativeBuildInputPaths ++ buildInputPaths);
   allInputArgs = map (p: builtins.elemAt p 0) allInputPaths;
-  fArgs = lib.genAttrs (["stdenv" "llvmPackages"] ++ allInputArgs) (n: false);
+  fArgs = lib.genAttrs (["stdenv"] ++ allInputArgs) (n: false);
 
-  f = args @ {
-    stdenv,
-    llvmPackages,
-    ...
-  }: let
+  f = args @ {stdenv, ...}: let
     fromArgs = attrPath: lib.getAttrFromPath attrPath args;
   in
     stdenv.mkDerivation rec {
@@ -23,10 +19,6 @@
       };
       nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [cfg.libs.odinLib];
       buildInputs = map fromArgs buildInputPaths;
-
-      LLVM_CONFIG = "${llvmPackages.llvm.dev}/bin/llvm-config";
-
-      dontConfigure = true;
 
       buildPhase = ''
         runHook preBuild
