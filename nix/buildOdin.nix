@@ -24,7 +24,15 @@
         inherit cfg;
       };
       nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [odinLib tree];
-      buildInputs = map fromArgs buildInputPaths;
+      buildInputs =
+        (map fromArgs buildInputPaths)
+        ++ [
+          sokol-odin.app
+          sokol-odin.gfx
+          sokol-odin.glue
+          sokol-odin.gl
+          sokol-odin.log
+        ];
 
       unpackPhase = ''
         mkdir -p ./src/main
