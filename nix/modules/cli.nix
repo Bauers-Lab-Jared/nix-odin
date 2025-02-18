@@ -34,7 +34,6 @@ in {
     lib.mkMerge [
       {
         all.args = [
-          "-use-separate-modules"
         ];
         build.args = [
           "-out:$out/bin/$pname"
