@@ -5,9 +5,13 @@
   fArgs = let
     allInputs = lib.unique (cfg.nativeBuildInputs ++ cfg.buildInputs);
   in
-    lib.genAttrs (["stdenv"] ++ allInputs) (n: false);
+    lib.genAttrs (["which" "stdenv"] ++ allInputs) (n: false);
 
-  f = args @ {stdenv, ...}: let
+  f = args @ {
+    stdenv,
+    which,
+    ...
+  }: let
     fromArgs = name: builtins.getAttr name args;
   in
     stdenv.mkDerivation {
@@ -15,11 +19,14 @@
       passthru = {
         inherit cfg;
       };
-      nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib];
+      nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib which];
       buildInputs = map fromArgs cfg.buildInputs;
 
       buildPhase = ''
         runHook preBuild
+
+        which ld
+        which odin
 
         mkdir -p $out/bin
         ${cfg.cli.build.cmd}
