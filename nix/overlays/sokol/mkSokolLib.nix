@@ -57,8 +57,8 @@ stdenv.mkDerivation rec {
 
     rDst="$out/lib/sokol_${pname}_release"
     dDst="$out/lib/sokol_${pname}_debug"
-    rLink="$out/include/sokol_gl_linux_x64_gl_release"
-    dLink="$out/include/sokol_gl_linux_x64_gl_debug"
+    rLink="$out/include/sokol_${pname}_linux_x64_gl_release"
+    dLink="$out/include/sokol_${pname}_linux_x64_gl_debug"
 
     mkdir -p "$out/lib/pkgconfig"
     mkdir -p "$out/include"
