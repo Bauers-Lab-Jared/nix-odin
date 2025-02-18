@@ -66,6 +66,12 @@
         cp -r -L ${sokol-odin.log}/lib/*so $out/lib
         chmod -R u+w -- $out/lib
 
+        NIX_LDFLAGS="$NIX_LDFLAGS \
+        -L${sokol-odin.app}/lib \
+        -L${sokol-odin.gfx}/lib \
+        -L${sokol-odin.glue}/lib \
+        -L${sokol-odin.gl}/lib \
+        -L${sokol-odin.log}/lib"
 
         mkdir -p $out/bin
         ${cfg.cli.build.cmd}
