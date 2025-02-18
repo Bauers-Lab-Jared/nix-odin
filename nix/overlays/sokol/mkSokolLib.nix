@@ -66,7 +66,7 @@ stdenv.mkDerivation rec {
     #SOKOL_DEPS="$(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
 
     sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
-    sed -i "s/\(sokol_[^_]*_linux_x64_gl_[^._]*.[^\"]*\)/system:\1/" *.odin
+    sed -i "s/sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).\([^\"]*\)/system:sokol_\1_\2\3/" *.odin
 
     #pkgcfg="$out/lib/pkgconfig/sokol_${pname}.pc"
 
@@ -84,15 +84,15 @@ stdenv.mkDerivation rec {
 
     cp *.odin "$out/include"
 
-    mv release.a $rDst.a
-    mv debug.a $dDst.a
-    mv release.so $rDst.so
-    mv debug.so $dDst.so
+    mv release.a "''${rDst}a"
+    mv debug.a "''${dDst}a"
+    mv release.so "''${rDst}so"
+    mv debug.so "''${dDst}so"
 
-    ln -s $rDst.a $rLink.a
-    ln -s $dDst.a $dLink.a
-    ln -s $rDst.so $rLink.so
-    ln -s $dDst.so $dLink.so
+    ln -s "''${rDst}a" "''${rLink}a"
+    ln -s "''${dDst}a" "''${dLink}a"
+    ln -s "''${rDst}so" "''${rLink}so"
+    ln -s "''${dDst}so" "''${dLink}so"
 
     runHook postInstall
   '';
