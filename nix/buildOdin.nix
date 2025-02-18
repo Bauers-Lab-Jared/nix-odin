@@ -44,11 +44,17 @@
         mkdir -p ./src/lib/sokol/log
 
         cp -r -L $src/* ./src/main
-        cp -r -L ${sokol-odin.app}/include/* ./src/lib/sokol/app
-        cp -r -L ${sokol-odin.gfx}/include/* ./src/lib/sokol/gfx
-        cp -r -L ${sokol-odin.glue}/include/* ./src/lib/sokol/glue
-        cp -r -L ${sokol-odin.gl}/include/* ./src/lib/sokol/gl
-        cp -r -L ${sokol-odin.log}/include/* ./src/lib/sokol/log
+        cp -r -L ${sokol-odin.app}/include/*.odin ./src/lib/sokol/app
+        cp -r -L ${sokol-odin.gfx}/include/*.odin ./src/lib/sokol/gfx
+        cp -r -L ${sokol-odin.glue}/include/*.odin ./src/lib/sokol/glue
+        cp -r -L ${sokol-odin.gl}/include/*.odin ./src/lib/sokol/gl
+        cp -r -L ${sokol-odin.log}/include/*.odin ./src/lib/sokol/log
+
+        cp -r -L ${sokol-odin.app}/include/*a ./src/lib
+        cp -r -L ${sokol-odin.gfx}/include/*a ./src/lib
+        cp -r -L ${sokol-odin.glue}/include/*a ./src/lib
+        cp -r -L ${sokol-odin.gl}/include/*a ./src/lib
+        cp -r -L ${sokol-odin.log}/include/*a ./src/lib
 
         chmod -R u+w -- ./
 
