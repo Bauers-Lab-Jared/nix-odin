@@ -50,12 +50,6 @@
         cp -r -L ${sokol-odin.gl}/include/*.odin ./src/lib/sokol/gl
         cp -r -L ${sokol-odin.log}/include/*.odin ./src/lib/sokol/log
 
-        cp -r -L ${sokol-odin.app}/include/*a ./src/lib
-        cp -r -L ${sokol-odin.gfx}/include/*a ./src/lib
-        cp -r -L ${sokol-odin.glue}/include/*a ./src/lib
-        cp -r -L ${sokol-odin.gl}/include/*a ./src/lib
-        cp -r -L ${sokol-odin.log}/include/*a ./src/lib
-
         chmod -R u+w -- ./
 
         tree
@@ -63,6 +57,15 @@
 
       buildPhase = ''
         runHook preBuild
+
+        mkdir -p $out/lib
+        cp -r -L ${sokol-odin.app}/lib/*so $out/lib
+        cp -r -L ${sokol-odin.gfx}/lib/*so $out/lib
+        cp -r -L ${sokol-odin.glue}/lib/*so $out/lib
+        cp -r -L ${sokol-odin.gl}/lib/*so $out/lib
+        cp -r -L ${sokol-odin.log}/lib/*so $out/lib
+        chmod -R u+w -- $out/lib
+
 
         mkdir -p $out/bin
         ${cfg.cli.build.cmd}
