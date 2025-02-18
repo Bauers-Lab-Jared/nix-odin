@@ -8,11 +8,12 @@
   buildInputPaths = getInputPaths (lib.unique cfg.buildInputStrs);
   allInputPaths = lib.unique (nativeBuildInputPaths ++ buildInputPaths);
   allInputArgs = map (p: builtins.elemAt p 0) allInputPaths;
-  fArgs = lib.genAttrs (["tree" "stdenv"] ++ allInputArgs) (n: false);
+  fArgs = lib.genAttrs (["tree" "stdenv" "sokol-odin"] ++ allInputArgs) (n: false);
 
   f = args @ {
     stdenv,
     tree,
+    sokol-odin,
     ...
   }: let
     fromArgs = attrPath: lib.getAttrFromPath attrPath args;
@@ -27,10 +28,19 @@
 
       unpackPhase = ''
         mkdir -p ./src/main
-        mkdir -p ./src/lib
+        mkdir -p ./src/lib/sokol
+        mkdir -p ./src/lib/sokol/app
+        mkdir -p ./src/lib/sokol/gfx
+        mkdir -p ./src/lib/sokol/glue
+        mkdir -p ./src/lib/sokol/gl
+        mkdir -p ./src/lib/sokol/log
 
         cp -r -L $src/* ./src/main
-        cp -r -L ${odinLib}/* ./src/lib
+        cp -r -L ${sokol-odin.app}/include/* ./src/lib/sokol/app
+        cp -r -L ${sokol-odin.gfx}/include/* ./src/lib/sokol/gfx
+        cp -r -L ${sokol-odin.glue}/include/* ./src/lib/sokol/glue
+        cp -r -L ${sokol-odin.gl}/include/* ./src/lib/sokol/gl
+        cp -r -L ${sokol-odin.log}/include/* ./src/lib/sokol/log
 
         chmod -R u+w -- ./
 
