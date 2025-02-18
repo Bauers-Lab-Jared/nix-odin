@@ -66,7 +66,7 @@ stdenv.mkDerivation rec {
     #SOKOL_DEPS="$(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
 
     sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
-    sed -i "s/\(sokol_[^_]*_linux_x64_gl_[^._]*.[^\"]*\)/lib:sokol\/${pname}\/\1/" *.odin
+    sed -i "s/\(sokol_[^_]*_linux_x64_gl_[^._]*.[^\"]*\)/system:\1/" *.odin
 
     #pkgcfg="$out/lib/pkgconfig/sokol_${pname}.pc"
 
