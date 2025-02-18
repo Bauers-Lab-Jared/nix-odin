@@ -14,13 +14,17 @@
   }: let
     fromArgs = name: builtins.getAttr name args;
   in
-    stdenv.mkDerivation {
+    stdenv.mkDerivation rec {
       inherit (cfg) pname version src;
       passthru = {
         inherit cfg;
       };
       nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib which];
-      buildInputs = map fromArgs cfg.buildInputs;
+      buildInputs = (map fromArgs cfg.buildInputs) ++ [pkgs.sokol-odin];
+
+      LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${
+        pkgs.lib.makeLibraryPath buildInputs
+      }";
 
       buildPhase = ''
         runHook preBuild
