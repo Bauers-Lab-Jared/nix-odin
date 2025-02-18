@@ -6,7 +6,6 @@
 }: let
   cfg = config.libs;
   inherit (lib) types;
-  inherit (pkgs) odinLibs;
 in {
   options = {
     libs = {
@@ -15,13 +14,13 @@ in {
         default = [];
       };
       odinLib = lib.mkOption {
-        type = types.nullOr types.package;
+        type = types.nullOr types.anything;
       };
     };
   };
 
   config = lib.mkIf (cfg.import != []) {
-    libs.odinLib = let
+    libs.odinLib = odinLibs: let
       links =
         map (
           s: let

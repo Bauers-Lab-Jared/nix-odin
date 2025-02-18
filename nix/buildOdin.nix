@@ -1,6 +1,7 @@
 {pkgs}: projConfig: let
   inherit (pkgs) odinConfig lib;
   cfg = odinConfig projConfig;
+  odinLib = cfg.libs.odinLib pkgs.odinLibs;
 
   getInputPaths = inputStrs: map (s: lib.splitString "." s) inputStrs;
   nativeBuildInputPaths = getInputPaths (lib.unique cfg.nativeBuildInputStrs);
@@ -17,7 +18,7 @@
       passthru = {
         inherit cfg;
       };
-      nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [cfg.libs.odinLib];
+      nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [odinLib];
       buildInputs = map fromArgs buildInputPaths;
 
       unpackPhase = ''
@@ -25,7 +26,7 @@
         mkdir -p ./src/lib
 
         cp -r -L $src/** ./src/main
-        cp -r -L ${cfg.libs.odinLib}/** ./src/lib
+        cp -r -L ${odinLib}/** ./src/lib
       '';
 
       buildPhase = ''
