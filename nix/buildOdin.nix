@@ -8,25 +8,33 @@
   buildInputPaths = getInputPaths (lib.unique cfg.buildInputStrs);
   allInputPaths = lib.unique (nativeBuildInputPaths ++ buildInputPaths);
   allInputArgs = map (p: builtins.elemAt p 0) allInputPaths;
-  fArgs = lib.genAttrs (["stdenv"] ++ allInputArgs) (n: false);
+  fArgs = lib.genAttrs (["tree" "stdenv"] ++ allInputArgs) (n: false);
 
-  f = args @ {stdenv, ...}: let
+  f = args @ {
+    stdenv,
+    tree,
+    ...
+  }: let
     fromArgs = attrPath: lib.getAttrFromPath attrPath args;
   in
-    stdenv.mkDerivation rec {
+    stdenv.mkDerivation {
       inherit (cfg) pname version src;
       passthru = {
         inherit cfg;
       };
-      nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [odinLib];
+      nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [odinLib tree];
       buildInputs = map fromArgs buildInputPaths;
 
       unpackPhase = ''
         mkdir -p ./src/main
         mkdir -p ./src/lib
 
-        cp -r -L $src/** ./src/main
-        cp -r -L ${odinLib}/** ./src/lib
+        cp -r -L $src/* ./src/main
+        cp -r -L ${odinLib}/* ./src/lib
+
+        chmod -R u+w -- ./
+
+        tree
       '';
 
       buildPhase = ''
