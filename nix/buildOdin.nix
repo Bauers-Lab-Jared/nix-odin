@@ -20,6 +20,14 @@
       nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [cfg.libs.odinLib];
       buildInputs = map fromArgs buildInputPaths;
 
+      unpackPhase = ''
+        mkdir -p ./src/main
+        mkdir -p ./src/lib
+
+        cp -r -L $src/** ./src/main
+        cp -r -L ${cfg.libs.odinLib}/** ./src/lib
+      '';
+
       buildPhase = ''
         runHook preBuild
 

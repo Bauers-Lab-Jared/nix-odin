@@ -29,7 +29,7 @@ in {
       if type == "test"
       then "test"
       else "build"
-    } $src";
+    } ./src/main";
   in
     lib.mkMerge [
       {

@@ -35,6 +35,6 @@ in {
     in
       pkgs.linkFarm "odinLib" links;
 
-    cli.all.args = ["-collection:lib='${cfg.odinLib}'"];
+    cli.all.args = ["-collection:lib='./src/lib'"];
   };
 }

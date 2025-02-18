@@ -63,24 +63,24 @@ stdenv.mkDerivation rec {
     mkdir -p "$out/lib/pkgconfig"
     mkdir -p "$out/include"
 
-    SOKOL_DEPS="$(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
+    #SOKOL_DEPS="$(sed -n 's/^import .*"\.\.\/\([^"]*\)"/\1/p' *.odin | sed 's/\(.*\)\n/\1 /')"
 
     sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
-    sed -i "s/sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).[^\"]*/system:sokol_\1/" *.odin
+    #sed -i "s/sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).[^\"]*/system:sokol_\1/" *.odin
 
-    pkgcfg="$out/lib/pkgconfig/sokol_${pname}.pc"
+    #pkgcfg="$out/lib/pkgconfig/sokol_${pname}.pc"
 
-    echo "prefix=$prefix" > "$pkgcfg"
-    echo "exec_prefix=\''${exec_prefix}" >> "$pkgcfg"
-    echo "libdir=$prefix/lib" >> "$pkgcfg"
-    echo "includedir=$prefix/include" >> "$pkgcfg"
-    echo "" >> "$pkgcfg"
-    echo "Name: sokol_${pname}" >> "$pkgcfg"
-    echo "Description: The ${pname} module from sokol-odin" >> "$pkgcfg"
-    echo "Version: 0" >> "$pkgcfg"
-    echo "Libs: -L\"\''${libdir}\" -lsokol_${pname}" >> "$pkgcfg"
-    echo "Requires: $SOKOL_DEPS" >> "$pkgcfg"
-    echo "Cflags: -I\"\''${includedir}\"" >> "$pkgcfg"
+    #echo "prefix=$prefix" > "$pkgcfg"
+    #echo "exec_prefix=\''${exec_prefix}" >> "$pkgcfg"
+    #echo "libdir=$prefix/lib" >> "$pkgcfg"
+    #echo "includedir=$prefix/include" >> "$pkgcfg"
+    #echo "" >> "$pkgcfg"
+    #echo "Name: sokol_${pname}" >> "$pkgcfg"
+    #echo "Description: The ${pname} module from sokol-odin" >> "$pkgcfg"
+    #echo "Version: 0" >> "$pkgcfg"
+    #echo "Libs: -L\"\''${libdir}\" -lsokol_${pname}" >> "$pkgcfg"
+    #echo "Requires: $SOKOL_DEPS" >> "$pkgcfg"
+    #echo "Cflags: -I\"\''${includedir}\"" >> "$pkgcfg"
 
     cp *.odin "$out/include"
 
@@ -89,10 +89,10 @@ stdenv.mkDerivation rec {
     mv release.so $rDst.so
     mv debug.so $dDst.so
 
-    #ln -s $rDst.a $rLink.a
-    #ln -s $dDst.a $dLink.a
-    #ln -s $rDst.so $rLink.so
-    #ln -s $dDst.so $dLink.so
+    ln -s $rDst.a $rLink.a
+    ln -s $dDst.a $dLink.a
+    ln -s $rDst.so $rLink.so
+    ln -s $dDst.so $dLink.so
 
     runHook postInstall
   '';
