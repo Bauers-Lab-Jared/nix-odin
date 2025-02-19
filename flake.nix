@@ -35,7 +35,7 @@
   in
     flake-utils.lib.eachDefaultSystem out
     // {
-      overlays.default = import ./nix/overlays {inherit lib;};
+      overlays.default = import ./nix/overlays;
       buildOdin = import ./nix/buildOdin.nix;
     };
 }
