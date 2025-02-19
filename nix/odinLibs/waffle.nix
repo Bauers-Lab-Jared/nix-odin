@@ -25,7 +25,7 @@ in
     installPhase = ''
       runHook preInstall
 
-      target=$out/share
+      target=$out/include
       mkdir -p $target
       cp -r ./ $target
 

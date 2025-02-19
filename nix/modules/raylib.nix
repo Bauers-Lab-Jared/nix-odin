@@ -10,7 +10,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    buildInputs = [
+    buildInputStrs = [
       "libX11"
       "libGL"
       "raylib"

@@ -15,22 +15,26 @@ in {
         default = [];
       };
       odinLib = lib.mkOption {
-        type = types.nullOr types.package;
+        type = types.nullOr types.anything;
       };
     };
   };
 
   config = lib.mkIf (cfg.import != []) {
-    libs.odinLib = let
+    libs.odinLib = odinLibs: let
       links =
-        map (name: {
-          inherit name;
-          path = "${odinLibs.${name}}/share";
-        })
+        map (
+          s: let
+            p = lib.splitString "." s;
+          in {
+            name = builtins.concatStringsSep "/" p;
+            path = "${lib.getAttrFromPath p odinLibs}/include";
+          }
+        )
         cfg.import;
     in
       pkgs.linkFarm "odinLib" links;
 
-    cli.all.args = ["-collection:lib='${cfg.odinLib}'"];
+    cli.all.args = ["-collection:lib='./src/lib'"];
   };
 }

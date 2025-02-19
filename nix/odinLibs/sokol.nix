@@ -1,7 +1,6 @@
 {
   stdenv,
   fetchFromGitHub,
-  lib,
   libGLU,
   mesa,
   xorg,
@@ -23,7 +22,7 @@ stdenv.mkDerivation {
   postInstall = "";
   addonInfo = null;
 
-  propagatedBuildInputs = [
+  buildInputs = [
     libGLU
     mesa
     xorg.libX11
@@ -45,7 +44,7 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    target=$out/share
+    target=$out/include
     mkdir -p $target
     cp -r ./sokol/** $target
 

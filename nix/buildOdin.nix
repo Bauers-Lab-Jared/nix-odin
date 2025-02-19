@@ -8,21 +8,35 @@
   in
     (lib.evalModules {inherit modules;}).config;
 
-  fArgs = let
-    allInputs = lib.unique (cfg.nativeBuildInputs ++ cfg.buildInputs);
-  in
-    lib.genAttrs (["stdenv"] ++ allInputs) (n: false);
+  getInputPaths = inputStrs: map (s: lib.splitString "." s) inputStrs;
+  nativeBuildInputPaths = getInputPaths (lib.unique cfg.nativeBuildInputStrs);
+  buildInputPaths = getInputPaths (lib.unique cfg.buildInputStrs);
+  allInputPaths = lib.unique (nativeBuildInputPaths ++ buildInputPaths);
+  allInputArgs = map (p: builtins.elemAt p 0) allInputPaths;
+  fArgs = lib.genAttrs (["tree" "stdenv" "sokol-odin"] ++ allInputArgs) (n: false);
 
   f = args @ {stdenv, ...}: let
-    fromArgs = name: builtins.getAttr name args;
+    fromArgs = attrPath: lib.getAttrFromPath attrPath args;
   in
     stdenv.mkDerivation {
       inherit (cfg) pname version src;
-      passthru = {
-        inherit cfg;
-      };
-      nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib];
-      buildInputs = map fromArgs cfg.buildInputs;
+      passthru = {inherit cfg;};
+      nativeBuildInputs = (map fromArgs nativeBuildInputPaths) ++ [cfg.libs.odinLib];
+      buildInputs = map fromArgs buildInputPaths;
+
+      unpackPhase = ''
+        runHook preUnpack
+
+        mkdir -p ./src/main
+        mkdir -p ./src/lib
+
+        cp -r -L $src/* ./src/main
+        cp -r ${cfg.libs.odinLib} ./src/lib
+
+        chmod -R u+w -- ./src/main
+
+        runHook postUnpack
+      '';
 
       buildPhase = ''
         runHook preBuild

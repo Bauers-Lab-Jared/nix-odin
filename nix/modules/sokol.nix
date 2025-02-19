@@ -11,7 +11,13 @@ in {
 
   config = lib.mkIf cfg.enable {
     buildInputs = [
-      "sokol-odin"
+      "odinLibs.sokol"
+      "libGLU"
+      "mesa"
+      "xorg.libX11"
+      "xorg.libXi"
+      "xorg.libXcursor"
+      "alsa-lib"
     ];
     libs.import = ["sokol"];
   };
