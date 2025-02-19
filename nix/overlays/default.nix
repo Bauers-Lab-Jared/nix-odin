@@ -1,8 +1,7 @@
-final: prev: {
-  odinLibs = prev.lib.packagesFromDirectoryRecursive {
-    inherit (prev) callPackage;
-    directory = ../odinLibs;
-  };
+final: first: let
+  prev = first.extend (import ./odinLibs.nix);
+in {
+  inherit (prev) odinLibs;
 
   # TODO: Wait for https://github.com/odin-lang/Odin/pull/4619 to be merged
   odin = prev.odin.overrideAttrs {
