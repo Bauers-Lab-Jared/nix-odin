@@ -10,7 +10,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    buildInputs = [
+    buildInputStrs = [
       "odinLibs.sokol"
       "libGLU"
       "mesa"

@@ -2,7 +2,6 @@
   lib,
   config,
   pkgs,
-  odinLibs,
   ...
 }: let
   cfg = config.libs;
@@ -21,20 +20,20 @@ in {
   };
 
   config = lib.mkIf (cfg.import != []) {
-    libs.odinLib = odinLibs: let
+    libs.odinLib = let
       links =
         map (
           s: let
             p = lib.splitString "." s;
           in {
             name = builtins.concatStringsSep "/" p;
-            path = "${lib.getAttrFromPath p odinLibs}/include";
+            path = "${lib.getAttrFromPath p pkgs.odinLibs}/include";
           }
         )
         cfg.import;
     in
       pkgs.linkFarm "odinLib" links;
 
-    cli.all.args = ["-collection:lib='./src/lib'"];
+    cli.all.args = ["-collection:lib='${cfg.odinLib}'"];
   };
 }

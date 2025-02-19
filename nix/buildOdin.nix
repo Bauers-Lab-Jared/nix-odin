@@ -13,8 +13,8 @@
   buildInputPaths = getInputPaths (lib.unique cfg.buildInputStrs);
   allInputPaths = lib.unique (nativeBuildInputPaths ++ buildInputPaths);
   allInputArgs = map (p: builtins.elemAt p 0) allInputPaths;
-  fArgs = lib.genAttrs (["tree" "stdenv" "sokol-odin"] ++ allInputArgs) (n: false);
 
+  fArgs = lib.genAttrs (["stdenv"] ++ allInputArgs) (n: false);
   f = args @ {stdenv, ...}: let
     fromArgs = attrPath: lib.getAttrFromPath attrPath args;
   in
@@ -28,10 +28,8 @@
         runHook preUnpack
 
         mkdir -p ./src/main
-        mkdir -p ./src/lib
 
         cp -r -L $src/* ./src/main
-        cp -r ${cfg.libs.odinLib} ./src/lib
 
         chmod -R u+w -- ./src/main
 
