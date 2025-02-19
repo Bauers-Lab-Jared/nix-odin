@@ -11,10 +11,12 @@
     flake-utils,
     ...
   }: let
-    inherit (nixpkgs) lib;
     out = system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      appliedOverlay = self.overlays.default pkgs pkgs;
+      appliedOverlay = import nixpkgs {
+        inherit system;
+        overlays = self.overlays.list;
+      };
     in {
       packages = {
         inherit (appliedOverlay) odinLibs buildOdin odinConfig;
@@ -35,7 +37,7 @@
   in
     flake-utils.lib.eachDefaultSystem out
     // {
-      overlays.default = import ./nix/overlays;
+      overlays.list = import ./nix/overlays;
       buildOdin = import ./nix/buildOdin.nix;
     };
 }
