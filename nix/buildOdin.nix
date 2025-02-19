@@ -1,36 +1,31 @@
-{pkgs}: projConfig: let
-  inherit (pkgs) odinConfig lib;
-  cfg = odinConfig projConfig;
+{
+  pkgs,
+  projConfig,
+}: let
+  inherit (pkgs) lib;
+  cfg = let
+    modules = [({...}: {config._module.args = {inherit pkgs;};}) ./modules] ++ projConfig;
+  in
+    (lib.evalModules {inherit modules;}).config;
 
   fArgs = let
     allInputs = lib.unique (cfg.nativeBuildInputs ++ cfg.buildInputs);
   in
-    lib.genAttrs (["which" "stdenv"] ++ allInputs) (n: false);
+    lib.genAttrs (["stdenv"] ++ allInputs) (n: false);
 
-  f = args @ {
-    stdenv,
-    which,
-    ...
-  }: let
+  f = args @ {stdenv, ...}: let
     fromArgs = name: builtins.getAttr name args;
   in
-    stdenv.mkDerivation rec {
+    stdenv.mkDerivation {
       inherit (cfg) pname version src;
       passthru = {
         inherit cfg;
       };
-      nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib which];
-      buildInputs = (map fromArgs cfg.buildInputs) ++ [pkgs.sokol-odin];
-
-      LD_LIBRARY_PATH = "$LD_LIBRARY_PATH:${
-        pkgs.lib.makeLibraryPath buildInputs
-      }";
+      nativeBuildInputs = (map fromArgs cfg.nativeBuildInputs) ++ [cfg.libs.odinLib];
+      buildInputs = map fromArgs cfg.buildInputs;
 
       buildPhase = ''
         runHook preBuild
-
-        which ld
-        which odin
 
         mkdir -p $out/bin
         ${cfg.cli.build.cmd}

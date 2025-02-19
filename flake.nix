@@ -19,6 +19,7 @@
       packages = {
         inherit (appliedOverlay) odinLibs buildOdin odinConfig;
       };
+
       devShells.default = pkgs.mkShell {
         packages = [
           (self.inputs.nixvim.lib.mkNixvim {
@@ -35,5 +36,6 @@
     flake-utils.lib.eachDefaultSystem out
     // {
       overlays.default = import ./nix/overlays {inherit lib;};
+      buildOdin = import ../buildOdin.nix;
     };
 }
