@@ -2,7 +2,6 @@
   lib,
   config,
   pkgs,
-  odinLibs,
   ...
 }: let
   cfg = config.libs;
@@ -15,7 +14,8 @@ in {
         default = [];
       };
       odinLib = lib.mkOption {
-        type = types.nullOr types.package;
+        type = types.anything;
+        default = [];
       };
     };
   };
@@ -23,10 +23,14 @@ in {
   config = lib.mkIf (cfg.import != []) {
     libs.odinLib = let
       links =
-        map (name: {
-          inherit name;
-          path = odinLibs.${name};
-        })
+        map (
+          s: let
+            p = lib.splitString "." s;
+          in {
+            name = builtins.concatStringsSep "/" p;
+            path = "${lib.getAttrFromPath p pkgs.odinLibs}/include";
+          }
+        )
         cfg.import;
     in
       pkgs.linkFarm "odinLib" links;

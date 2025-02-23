@@ -29,12 +29,11 @@ in {
       if type == "test"
       then "test"
       else "build"
-    } $src";
+    } ./src/main";
   in
     lib.mkMerge [
       {
         all.args = [
-          "-use-separate-modules"
         ];
         build.args = [
           "-out:$out/bin/$pname"
