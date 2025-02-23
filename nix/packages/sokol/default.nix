@@ -60,7 +60,6 @@
       installPhase = ''
         runHook preInstall
 
-        mkdir -p "$out/lib/pkgconfig"
         mkdir -p "$out/include"
         mkdir -p "$static"
 
