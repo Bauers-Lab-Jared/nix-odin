@@ -2,6 +2,7 @@
   lib,
   fetchFromGitHub,
   callPackage,
+  static ? true,
   ...
 }: let
   src = fetchFromGitHub {
@@ -32,25 +33,31 @@
         alsa-lib
       ];
 
-      outputs = ["out" "static"];
-
       buildPhase = ''
         runHook preBuild
 
         lsrc=sokol_${name}
         backend=SOKOL_GLCORE
 
-        # static
-        cc -pthread -c -O2 -DNDEBUG -DIMPL -D$backend ../c/$lsrc.c
-        ar rcs release.a $lsrc.o
-        # shared
-        cc -pthread -shared -O2 -fPIC -DNDEBUG -DIMPL -D$backend -o release.so ../c/$lsrc.c
+        ${
+          if static
+          then
+            # bash
+            ''
+              cc -pthread -c -O2 -DNDEBUG -DIMPL -D$backend ../c/$lsrc.c
+              ar rcs release.a $lsrc.o
 
-        # static
-        cc -pthread -c -g -DIMPL -D$backend ../c/$lsrc.c
-        ar rcs debug.a $lsrc.o
-        # shared
-        cc -pthread -shared -g -fPIC -DIMPL -D$backend -o debug.so ../c/$lsrc.c
+              cc -pthread -c -g -DIMPL -D$backend ../c/$lsrc.c
+              ar rcs debug.a $lsrc.o
+            ''
+          else
+            #bash
+            ''
+              cc -pthread -shared -O2 -fPIC -DNDEBUG -DIMPL -D$backend -o release.so ../c/$lsrc.c
+
+              cc -pthread -shared -g -fPIC -DIMPL -D$backend -o debug.so ../c/$lsrc.c
+            ''
+        }
 
         rm *.o
 
@@ -60,19 +67,29 @@
       installPhase = ''
         runHook preInstall
 
+        mkdir -p "$out/lib"
         mkdir -p "$out/include"
-        mkdir -p "$static"
 
         sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
         sed -i "s/sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).\([^\"]*\)/system:sokol_\1_\2/" *.odin
 
         cp *.odin "$out/include"
 
-        mv release.a "$static/libsokol_${name}_release.a"
-        mv debug.a "$static/libsokol_${name}_debug.a"
-        mv release.so "$out/lib/libsokol_${name}_release.so"
-        mv debug.so "$out/lib/libsokol_${name}_debug.so"
-
+        ${
+          if static
+          then
+            # bash
+            ''
+              mv release.a "$out/lib/libsokol_${name}_release.a"
+              mv debug.a "$out/lib/libsokol_${name}_debug.a"
+            ''
+          else
+            # bash
+            ''
+              mv release.so "$out/lib/libsokol_${name}_release.so"
+              mv debug.so "$out/lib/libsokol_${name}_debug.so"
+            ''
+        }
 
         runHook postInstall
       '';
