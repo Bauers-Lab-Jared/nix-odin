@@ -32,7 +32,7 @@
         alsa-lib
       ];
 
-      outputs = ["out"];
+      outputs = ["out" "static"];
 
       buildPhase = ''
         runHook preBuild
@@ -58,25 +58,24 @@
       '';
 
       installPhase = ''
-                runHook preInstall
+        runHook preInstall
 
-                rDst="$out/lib/libsokol_${name}"
-                dDst="$out/lib/libsokol_${name}_debug"
+        mkdir -p "$out/lib/pkgconfig"
+        mkdir -p "$out/include"
+        mkdir -p "$static"
 
-                mkdir -p "$out/lib/pkgconfig"
-                mkdir -p "$out/include"
+        sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
+        sed -i "s/sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).\([^\"]*\)/system:sokol_\1_\2/" *.odin
 
-                sed -i 's/^\(import .*"\)\.\.\/\([^"]*\)"/\1lib:sokol\/\2"/' *.odin
-                sed -i "s/sokol_\([^_]*\)_linux_x64_gl_\([^._]*\).\([^\"]*\)/system:sokol_\1/" *.odin
+        cp *.odin "$out/include"
 
-                cp *.odin "$out/include"
+        mv release.a "$static/libsokol_${name}_release.a"
+        mv debug.a "$static/libsokol_${name}_debug.a"
+        mv release.so "$out/lib/libsokol_${name}_release.so"
+        mv debug.so "$out/lib/libsokol_${name}_debug.so"
 
-        #        mv release.a "''${rDst}a"
-        #        mv debug.a "''${dDst}a"
-                mv release.so "''${rDst}.so"
-        #        mv debug.so "''${dDst}so"
 
-                runHook postInstall
+        runHook postInstall
       '';
     });
 
