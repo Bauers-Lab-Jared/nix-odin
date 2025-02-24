@@ -15,5 +15,7 @@
 
     # TODO: Wait for https://github.com/NixOS/nixpkgs/pull/357729 to be merged
     raylib = prev.callPackage ../packages/raylib {};
+
+    sokol-shdc = prev.callPackage ../packages/sokol-shdc {};
   })
 ]

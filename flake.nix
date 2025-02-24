@@ -19,7 +19,7 @@
       };
     in {
       packages = {
-        inherit (appliedOverlay) odinLibs buildOdin odinConfig;
+        inherit (appliedOverlay) sokol-shdc odinLibs buildOdin odinConfig;
       };
 
       devShells.default = pkgs.mkShell {
