@@ -18,6 +18,10 @@ in {
       type = types.listOf types.str;
       default = [];
     };
+    extraEnvVars = lib.mkOption {
+      type = types.attrsOf types.str;
+      default = {};
+    };
     pname = mkOpt types.str;
     version = mkOpt types.str;
     src = mkOpt types.path;

@@ -53,6 +53,7 @@
 
         runHook postInstall
       '';
-    };
+    }
+    // cfg.extraEnvVars;
 in
   lib.setFunctionArgs f fArgs
