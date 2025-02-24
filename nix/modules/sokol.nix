@@ -25,6 +25,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    nativeBuildInputStrs = ["sokol-shdc"];
     buildInputStrs = map (moduleName: "odinLibs.sokol.${moduleName}") cfg.modules;
     libs.import = map (moduleName: "sokol.${moduleName}") cfg.modules;
   };
